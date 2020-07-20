@@ -1,0 +1,70 @@
+Day 1: Get print8.ls8 running
+
+Inventory what is here
+Implement the CPU constructor
+Add RAM functions ram_read() and ram_write()
+Implement the core of run()
+Implement the HLT instruction handler
+Add the LDI instruction
+Add the PRN instruction
+
+
+1. Inventory what is here
+
+- two readmes: main and ls8
+- cpu.py
+- ls8.py
+- examples
+- ls8-spec
+- FAQ
+- ls8-cheatsheet
+
+An 8 bit CPU is one that only has 8 wires available for addresses
+(specifying where something is in memory), computations, and instructions.
+With 8 bits, our CPU has a total of 256 bytes of memory and can only compute values up to 255.
+The CPU could support 256 instructions, as well, but we won't need them.
+
+
+LDI: load "immediate", store a value in a register, or "set this register to this value".
+PRN: a pseudo-instruction that prints the numeric value stored in a register.
+HLT: halt the CPU and exit the emulator.
+
+
+        a.  Make a list of files here:
+
+            Write a short 3-10-word description of what each file does.
+            Note what has been implemented, and what hasn't.
+            Read this whole file.
+            Skim the spec.
+
+                - cpu.py
+                    - load()  # loads a program into memory
+                    - alu() # alu operations?
+                    - trace() # for printing out ram state?
+                    - run() run the CPU
+
+                - ls8.py
+                    - empty import (presumably for cpu.py)
+                    - cpu = CPU() instantiate the class object
+                    - cpu.load() load the program into memory
+                    - cpu.run() run the loaded program with cpu run function
+
+
+                - missing?
+                    - ram? - is that part of the cpu constructor?
+                    - program? - is that a parameter to be passed into load()?
+                    - ram_read()
+                    - ram_write()
+                    - the core of run() - what does that even mean?'
+                    - HLT instruction handler
+                    - LDI instruction handler
+                    - PRN instruction handler
+
+
+
+
+
+        cpu.py
+
+
+
