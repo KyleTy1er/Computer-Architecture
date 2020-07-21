@@ -132,7 +132,7 @@ CPU
     
     
 Memory (RAM)
-    A big array of byes
+    A big array of bytes
     Each memory slot has an index, and a value stored at that index
     that index into memory AKA;
         pointer 
