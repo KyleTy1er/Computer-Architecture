@@ -52,6 +52,8 @@ HLT: halt the CPU and exit the emulator.
 
                 - missing?
                     - ram? - is that part of the cpu constructor?
+                    - Add list properties to the CPU class to hold 256 bytes of memory
+                      and 8 general-purpose registers.
                     - program? - is that a parameter to be passed into load()?
                     - ram_read()
                     - ram_write()

@@ -6,11 +6,34 @@ class CPU:
     """Main CPU class."""
 
     def __init__(self):
-        """Construct a new CPU."""
-        pass
+        self.ram = [0] * 256
+        self.register = [0] * 8
+        self.pc = 0
+        self.ir = 0
+        self.mar = []
+        self.mdr = []
 
-    def load(self):
+    def ram_read(self):
+        '''
+        should accept the address to read and return the value stored there.
+        '''
+
+
+
+
+
+
+    def load(self, program):
         """Load a program into memory."""
+        program = sys.argv[1]
+        with open(program) as f:
+            for line in f:
+                line = line.split("#")
+
+                try:
+                    v = int(line[0])
+                except ValueError:
+                    continue
 
         address = 0
 
