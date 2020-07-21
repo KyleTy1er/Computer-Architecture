@@ -11,12 +11,18 @@ class CPU:
     """Main CPU class."""
 
     def __init__(self):
+        # The LS-8 has 8-bit addressing, so can address 256 bytes of RAM total.
         self.ram = [0] * 256
+        # These registers only hold values between 0-255.
         self.register = [0] * 8
+        # PC: Program Counter, address of the currently executing instruction
         self.pc = 0
+        # IR: Instruction Register, contains a copy of the currently executing instruction
         self.ir = 0
-        self.mar = []
-        self.mdr = []
+        # MAR: Memory Address Register, holds the memory address we're reading or writing
+        self.mar = 0
+        # MDR: Memory Data Register, holds the value to write or the value just read
+        self.mdr = 0
 
         self.dispatchtable = {
             PRN: self.prn,
@@ -39,28 +45,16 @@ class CPU:
 
         with open(file_name, 'r') as f:
             for line in f:
+                # ignore comments and new lines
                 if line.startswith('#') or line.startswith('\n'):
                     continue
                 else:
                     instruction = line.split(' ')[0]
+                    # specify base 2 as you read in lines to memory
                     self.ram[address] = int(instruction, 2)
                     address += 1
 
-    # def load(self, file):
-    #     """Load a program into memory."""
-    #     # file = sys.argv[1]
-    #
-    #
-    #     address = 0
-    #     with open(file) as f:
-    #         for line in f:
-    #             line = line.split("#")
-    #             try:
-    #                 v = int(line[0])
-    #                 self.ram[address] = v
-    #                 address += 1
-    #             except ValueError:
-    #                 continue
+    # def pc_calc(self):
 
     def prn(self, reg_a, reg_b):
         print(self.register[reg_a])
@@ -85,7 +79,6 @@ class CPU:
         # for instruction in program:
         #     self.ram[address] = instruction
         #     address += 1
-
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -121,6 +114,7 @@ class CPU:
         running = True
 
         while running:
+            self.trace()
             ir = self.ram_read(self.pc)
             reg_a = self.ram_read(self.pc + 1)
             reg_b = self.ram_read(self.pc + 2)

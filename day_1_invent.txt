@@ -57,16 +57,29 @@ HLT: halt the CPU and exit the emulator.
                     - program? - is that a parameter to be passed into load()?
                     - ram_read()
                     - ram_write()
-                    - the core of run() - what does that even mean?'
+                    - the core of run()
                     - HLT instruction handler
                     - LDI instruction handler
                     - PRN instruction handler
 
+-----------------------------------------------------------------------------------------
+
+cpu = CPU()
+
+cpu.load(print8.ls8)
+
+print8.ls8 =
+
+10000010 # LDI R0,8   = 130 in decimal
+00000000              = 0
+00001000              = 8
+01000111 # PRN R0     = 71
+00000000              =  0
+00000001 # HLT        =  1
 
 
+cpu.ram = [130, 0, 8, 71, 0, 1]
 
+cpu.run()
 
-        cpu.py
-
-
-
+ir =
