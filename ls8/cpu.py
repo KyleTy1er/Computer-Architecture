@@ -114,12 +114,25 @@ class CPU:
         running = True
 
         while running:
-            self.trace()
+            # self.trace()
             ir = self.ram_read(self.pc)
+            print("ir top")
+            print(ir)
+            print("ir bottom")
+
             reg_a = self.ram_read(self.pc + 1)
+            # print("reg a")
+            # print(reg_a)
             reg_b = self.ram_read(self.pc + 2)
+            # print("reg b")
+            # print(reg_b)
+            print("self pc top")
+            print(self.pc)
+            print("self pc bottom")
+            print("-------")
 
             if ir == HLT:
                 running = False
             else:
                 self.dispatchtable[ir](reg_a, reg_b)
+                # print(self.dispatchtable[ir](reg_a, reg_b))
