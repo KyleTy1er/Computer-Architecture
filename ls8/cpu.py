@@ -5,6 +5,10 @@ import sys
 PRN = 0b01000111
 HLT = 0b00000001
 LDI = 0b10000010
+MUL = 0b10100010
+
+# in a way these "instructions" are merely triggers by which we set up conditionals to fire off
+# functions at certain index locations in self.ram and self.register
 
 
 class CPU:
@@ -24,10 +28,10 @@ class CPU:
         # MDR: Memory Data Register, holds the value to write or the value just read
         self.mdr = 0
 
-        self.dispatchtable = {
-            PRN: self.prn,
-            LDI: self.ldi,
-        }
+        # self.dispatchtable = {
+        #     PRN: self.prn,
+        #     LDI: self.ldi,
+        # }
 
     def ram_read(self, mar):
         '''
@@ -57,10 +61,21 @@ class CPU:
     # def pc_calc(self):
 
     def prn(self, reg_a, reg_b):
+        '''
+        PRN register pseudo-instruction
+        Print numeric value stored in the given register.
+        Print to the console the decimal integer value that is stored in the given register.
+        '''
+
         print(self.register[reg_a])
         self.pc += 2
 
     def ldi(self, reg_a, reg_b):
+        '''
+        LDI register immediate
+        Set the value of a register to an integer.
+        '''
+
         self.register[reg_a] = reg_b
         self.pc += 3
 
@@ -80,11 +95,20 @@ class CPU:
         #     self.ram[address] = instruction
         #     address += 1
 
+    def mul(self, reg_a, reg_b):
+        self.alu("MUL", reg_a, reg_b)
+        self.pc += 3
+
+
+
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
 
         if op == "ADD":
             self.register[reg_a] += self.register[reg_b]
+        elif op == "MUL":
+            self.register[reg_a] *= self.register[reg_b]
+
         #elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
@@ -116,23 +140,17 @@ class CPU:
         while running:
             # self.trace()
             ir = self.ram_read(self.pc)
-            print("ir top")
-            print(ir)
-            print("ir bottom")
-
             reg_a = self.ram_read(self.pc + 1)
-            # print("reg a")
-            # print(reg_a)
             reg_b = self.ram_read(self.pc + 2)
-            # print("reg b")
-            # print(reg_b)
-            print("self pc top")
-            print(self.pc)
-            print("self pc bottom")
-            print("-------")
-
             if ir == HLT:
                 running = False
+            elif ir == PRN:
+                self.prn(reg_a, reg_b)
+            elif ir == LDI:
+                self.ldi(reg_a, reg_b)
+            elif ir == MUL:
+                self.mul(reg_a, reg_b)
             else:
-                self.dispatchtable[ir](reg_a, reg_b)
-                # print(self.dispatchtable[ir](reg_a, reg_b))
+                print("something aint right")
+
+

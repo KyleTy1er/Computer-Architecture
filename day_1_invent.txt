@@ -93,5 +93,3 @@ ir = 130
 reg_a = 1
 reg_b = 2
 
-self.dispatchtable[ir](reg_a, reg_b)
-self.dispatch[0]
