@@ -6,6 +6,8 @@ PRN = 0b01000111
 HLT = 0b00000001
 LDI = 0b10000010
 MUL = 0b10100010
+PUSH = 0b01000101
+POP = 0b01000110
 
 # in a way these "instructions" are merely triggers by which we set up conditionals to fire off
 # functions at certain index locations in self.ram and self.register
@@ -14,11 +16,16 @@ MUL = 0b10100010
 class CPU:
     """Main CPU class."""
 
+# R7 is Stack Pointer (SP)
+# [0, 0, 0, 0, 0, 0,  SP, 0]
+
     def __init__(self):
         # The LS-8 has 8-bit addressing, so can address 256 bytes of RAM total.
         self.ram = [0] * 256
         # These registers only hold values between 0-255.
         self.register = [0] * 8
+        self.sp = 7
+        self.register[self.sp] = 0xf4
         # PC: Program Counter, address of the currently executing instruction
         self.pc = 0
         # IR: Instruction Register, contains a copy of the currently executing instruction
@@ -79,6 +86,15 @@ class CPU:
         self.register[reg_a] = reg_b
         self.pc += 3
 
+    def push(self, reg_a, reg_b):
+        self.sp -= 1
+        self.ram_write(self.sp, self.register[reg_a])
+        self.pc += 2
+
+    def pop(self, reg_a, reg_b):
+        self.register[reg_a] = self.ram_read(self.sp)
+        self.sp += 1
+        self.pc += 2
         # For now, we've just hardcoded a program:
 
         # program = [
@@ -98,7 +114,6 @@ class CPU:
     def mul(self, reg_a, reg_b):
         self.alu("MUL", reg_a, reg_b)
         self.pc += 3
-
 
 
     def alu(self, op, reg_a, reg_b):
@@ -150,6 +165,10 @@ class CPU:
                 self.ldi(reg_a, reg_b)
             elif ir == MUL:
                 self.mul(reg_a, reg_b)
+            elif ir == PUSH:
+                self.push(reg_a, reg_b)
+            elif ir == POP:
+                self.pop(reg_a, reg_b)
             else:
                 print("something aint right")
 
