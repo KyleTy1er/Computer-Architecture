@@ -8,6 +8,10 @@ LDI = 0b10000010
 MUL = 0b10100010
 PUSH = 0b01000101
 POP = 0b01000110
+CALL = 0b01010000
+RET = 0b0010001
+RET = 0b00010001
+
 
 # in a way these "instructions" are merely triggers by which we set up conditionals to fire off
 # functions at certain index locations in self.ram and self.register
@@ -25,20 +29,12 @@ class CPU:
         # These registers only hold values between 0-255.
         self.register = [0] * 8
         self.sp = 7
-        self.register[self.sp] = 0xf4
         # PC: Program Counter, address of the currently executing instruction
         self.pc = 0
         # IR: Instruction Register, contains a copy of the currently executing instruction
         self.ir = 0
         # MAR: Memory Address Register, holds the memory address we're reading or writing
-        self.mar = 0
         # MDR: Memory Data Register, holds the value to write or the value just read
-        self.mdr = 0
-
-        # self.dispatchtable = {
-        #     PRN: self.prn,
-        #     LDI: self.ldi,
-        # }
 
     def ram_read(self, mar):
         '''
@@ -95,25 +91,19 @@ class CPU:
         self.register[reg_a] = self.ram_read(self.sp)
         self.sp += 1
         self.pc += 2
-        # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010, # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111, # PRN R0
-        #     0b00000000,
-        #     0b00000001, # HLT
-        # ]
-        #
-        # for instruction in program:
-        #     self.ram[address] = instruction
-        #     address += 1
 
     def mul(self, reg_a, reg_b):
         self.alu("MUL", reg_a, reg_b)
         self.pc += 3
+
+    def call(self, reg_a, reg_b):
+        self.sp -= 1
+        self.ram_write(self.sp, self.pc + 2)
+        self.pc = self.register[reg_a]
+
+    def ret(self, reg_a, reg_b):
+        self.pc = self.ram_read(self.sp)
+        self.sp += 1
 
 
     def alu(self, op, reg_a, reg_b):
@@ -148,6 +138,8 @@ class CPU:
 
         print()
 
+
+
     def run(self):
 
         running = True
@@ -169,6 +161,11 @@ class CPU:
                 self.push(reg_a, reg_b)
             elif ir == POP:
                 self.pop(reg_a, reg_b)
+            elif ir == CALL:
+                self.call(reg_a, reg_b)
+            elif ir == RET:
+                self.ret(reg_a, reg_b)
+
             else:
                 print("something aint right")
 
