@@ -9,9 +9,8 @@ MUL = 0b10100010
 PUSH = 0b01000101
 POP = 0b01000110
 CALL = 0b01010000
-RET = 0b0010001
 RET = 0b00010001
-
+ADD = 0b10100000
 
 # in a way these "instructions" are merely triggers by which we set up conditionals to fire off
 # functions at certain index locations in self.ram and self.register
@@ -111,6 +110,7 @@ class CPU:
 
         if op == "ADD":
             self.register[reg_a] += self.register[reg_b]
+            self.pc += 3
         elif op == "MUL":
             self.register[reg_a] *= self.register[reg_b]
 
@@ -153,6 +153,9 @@ class CPU:
                 running = False
             elif ir == PRN:
                 self.prn(reg_a, reg_b)
+            elif ir == ADD:
+                op =  "ADD"
+                self.alu(op, reg_a, reg_b)
             elif ir == LDI:
                 self.ldi(reg_a, reg_b)
             elif ir == MUL:
