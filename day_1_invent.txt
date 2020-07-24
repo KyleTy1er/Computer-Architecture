@@ -82,4 +82,14 @@ cpu.ram = [130, 0, 8, 71, 0, 1]
 
 cpu.run()
 
-ir =
+
+ir = self.ram_read(self.pc)
+        self.ram_read(self.pc)
+        self.pc = 0
+        self.ram[self.pc] = 130
+
+ir = 130
+
+reg_a = 1
+reg_b = 2
+

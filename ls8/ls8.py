@@ -9,6 +9,7 @@ cpu = CPU()
 
 try:
     cpu.load(f"examples/{sys.argv[1]}")
+    # cpu.load("examples/call.ls8")
     cpu.run()
     # print(cpu.ram)
 
