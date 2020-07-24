@@ -11,6 +11,10 @@ POP = 0b01000110
 CALL = 0b01010000
 RET = 0b00010001
 ADD = 0b10100000
+CMP = 0b10100111
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
 
 # in a way these "instructions" are merely triggers by which we set up conditionals to fire off
 # functions at certain index locations in self.ram and self.register
@@ -34,7 +38,7 @@ class CPU:
         self.ir = 0
         # MAR: Memory Address Register, holds the memory address we're reading or writing
         # MDR: Memory Data Register, holds the value to write or the value just read
-
+        self.fl = 0
     def ram_read(self, mar):
         '''
         should accept the address to read and return the value stored there.
@@ -61,6 +65,28 @@ class CPU:
                     address += 1
 
     # def pc_calc(self):
+
+    def cmp(self, reg_a, reg_b):
+        self.alu("CMP", reg_a, reg_b)
+        self.pc += 3
+
+    def jne(self, reg_a, reg_b):
+        if not self.fl:
+            self.jmp(reg_a, reg_b)
+        else:
+            self.pc += 2
+
+    def jmp(self, reg_a, reg_b):
+        self.pc = self.register[reg_a]
+
+    def jeq(self, reg_a, reg_b):
+        if self.fl:
+            self.jmp(reg_a, reg_b)
+
+        if not self.fl:
+            self.jmp(reg_a, reg_b)
+        else:
+            self.pc += 2
 
     def prn(self, reg_a, reg_b):
         '''
@@ -113,6 +139,9 @@ class CPU:
             self.pc += 3
         elif op == "MUL":
             self.register[reg_a] *= self.register[reg_b]
+        elif op == "CMP":
+            self.fl = 1 if self.register[reg_a] == self.register[reg_b] else 0
+            self.pc +=3
 
         #elif op == "SUB": etc
         else:
@@ -168,8 +197,17 @@ class CPU:
                 self.call(reg_a, reg_b)
             elif ir == RET:
                 self.ret(reg_a, reg_b)
+            elif ir == JMP:
+                self.jmp(reg_a, reg_b)
+            elif ir == JNE:
+                self.jne(reg_a, reg_b)
+            elif ir == JEQ:
+                self.jeq(reg_a, reg_b)
+            elif ir == CMP:
+                op =  "CMP"
+                self.alu(op, reg_a, reg_b)
 
             else:
-                print("something aint right")
+                print("something ain't right")
 
 
